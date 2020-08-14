@@ -5,6 +5,18 @@ import OutputLocation from './Output_Location';
 import Title from './Kizuna-Logo-Color.png'; //See https://www.edwardbeazer.com/importing-images-with-react/ for image import
 import 'bootstrap/dist/css/bootstrap.min.css'; //See https://react-bootstrap.github.io/getting-started/introduction/ for guide to Bootstrap installation and import
 
+/*NOTE: Here are the current issues:
+1) The percentages are properly set based on user events, and the allocation display shows current percentages based on what the user choooses.
+The display works. However, these percentages do not update right away, and therefore the user cannot see the current percentage after
+updating the profit margin input field. 
+
+2) The checklist items do not maintain state in their current construction; therefore, clicking
+the Next button will erase any user updates to the checklist.abs
+
+3) The id's of drug entries are duplicated among locations. Therefore, what the user 
+chooses for Drug 1 at Location 1 shows up for Drug 1 at each subsequent location if there 
+is more than one location.*/
+
 const App = () => {
   const [numLocations, setLocations] = useState(0);
   const [expgrprofit, setProfit] = useState(0);
@@ -130,7 +142,7 @@ const App = () => {
           tempPerc[i] = [];
           tempDrug[i] = [];
           drList[i] = [];
-          for (let j = 0; j < drugNum[i]; ++j) {
+          for (let j = 0; j < parseFloat(drugNum[i]); ++j) {
             tempPerc[i] = 0;
             tempDrug[i] = "";
             drList[i] = "";
@@ -158,16 +170,19 @@ const App = () => {
     console.log("changeHandler");
     //console.log("tempPerc");
     //console.log(tempPerc);
-    for (let i = 0; i < numLocations; ++i) {
+    for (let i = 0; i < parseFloat(numLocations); ++i) {
       for (let j = 0; j < parseFloat(drugNum[i]); ++j) {
         if (event.target.id === `p${i}-${j}`) {
           tempPerc[i][j] = event.target.value;
-          for (let j = 0; j < parseFloat(drugNum[i]); ++j) {
+          /*for (let j = 0; j < parseFloat(drugNum[i]); ++j) {
             tempBlock[j] = <div key = {`key1${i}-${j}`}><DrugType key = {`key${i}-${j}`} id = {`${i}-${j}`} drug = {drug[i][j]} changeHandle = {changeHandle} drugName = {drugName[i][j]} changeOfName = {changeName} percentage = {percentage[i][j]} onChange = {changeHandler} credit = {credit[i][j]} onCredit = {handleCredit}/></div>;
-          }
+          }*/
           //++count;
-          drugs[i] = tempBlock;
           setPercentage(tempPerc);
+          for (let j = 0; j < parseFloat(drugNum[i]); ++j) {
+            tempBlock[j] = <div key = {`key1${i}-${j}`}><DrugType key = {`key${i}-${j}`} id = {`${i}-${j}`} drug = {drug[i][j]} changeHandle = {changeHandle} drugName = {drugName[i][j]} changeOfName = {changeName} percentage = {tempPerc[i][j]} onChange = {changeHandler} credit = {credit[i][j]} onCredit = {handleCredit}/></div>;
+          }
+          drugs[i] = tempBlock;
           setList(drugs);
         }
       }
@@ -177,21 +192,29 @@ const App = () => {
         }
       }*/
     }
-    locGroup = locList.map((ind) => (<div key = {++loc_key}><Location key = {`key2${ind}`} id = {ind} location = {locName[ind]} 
+    /*locGroup = locList.map((ind) => (<div key = {++loc_key}><Location key = {`key2${ind}`} id = {ind} location = {locName[ind]} 
       list = {drugList[ind]} reset = {resetName} name = {name[ind]} onChange = {handleName} num = {drugNum[ind]} 
       numFunc = {handleDrug} init = {initDrugs}/></div>));
-    setHolder(locGroup);
+    setHolder(locGroup);*/
+    console.log("tempPerc");
+    console.log(tempPerc);
   }
-
+  console.log("percentage");
+  console.log(percentage);
   const changeHandle = (event) => {
     console.log("changeHandle");
-    for (let i = 0; i < numLocations; ++i) {
+    console.log(event.target.id);
+    for (let i = 0; i < parseFloat(numLocations); ++i) {
       for (let j = 0; j < parseFloat(drugNum[i]); ++j) {
         if (event.target.id === `dr${i}-${j}`) {
+          console.log("drug name event");
+          console.log(event.target.id);
           tempDrug[i][j] = event.target.value;
         }
       }
     }
+    console.log("tempDrug");
+    console.log(tempDrug);
     setDrugName(tempDrug);
 
     //setList(drugs);
@@ -202,8 +225,8 @@ const App = () => {
 
   const changeName = (event) => {
     console.log("changeName");
-    for (let i = 0; i < numLocations; ++i) {
-      for (let j = 0; j < drugNum[i]; ++j) {
+    for (let i = 0; i < parseFloat(numLocations); ++i) {
+      for (let j = 0; j < parseFloat(drugNum[i]); ++j) {
         if (event.target.id === `drug${i}-${j}`) {
           console.log(event.target.id);
           drList[i][j] = tempDrug[i][j];
@@ -255,7 +278,7 @@ const App = () => {
           tempPerc[i][k] = 0;
           console.log("id");
           console.log(`${i}-${k}`);
-          tempBlock[i] = (<div key = {`divKey${i}-${k}`}><DrugType key = {`key${i}-${k}`} id = {`id${i}-${k}`} drug = {drug[i][k]} changeHandle = {changeHandle} drugName = {drugName[i][k]} changeOfName = {changeName} percentage = {percentage[i][k]} onChange = {changeHandler} credit = {credit[i]} onCredit = {handleCredit}/></div>);
+          tempBlock[k] = (<div key = {`divKey${i}-${k}`}><DrugType key = {`key${i}-${k}`} id = {`${i}-${k}`} drug = {drug[i][k]} changeHandle = {changeHandle} drugName = {drugName[i][k]} changeOfName = {changeName} percentage = {percentage[i][k]} onChange = {changeHandler} credit = {credit[i]} onCredit = {handleCredit}/></div>);
           //tempDesc.push(`${i}-${k}`);
         }
         //++count;
@@ -313,14 +336,11 @@ const App = () => {
       }
     }
     */
-    locGroup = locList.map((i, ind) => (<div key = {++loc_key}><label key = {++loc_key} > <Location id = {ind} location = {locName[ind]} 
+    locGroup = locList.map((i, ind) => (<div key = {++loc_key}><Location id = {ind} location = {locName[ind]} 
       list = {drugList[i]} reset = {resetName} name = {name[ind]} onChange = {handleName} num = {drugNum[ind]} 
-      numFunc = {handleDrug} init = {initDrugs}/> </label></div>));
+      numFunc = {handleDrug} init = {initDrugs}/></div>));
     setHolder(locGroup);
   }
-
-  console.log("drugDesc");
-  console.log(drugDesc);
   /*//console.log("tempName");
   //console.log(tempName);
   setName(tempName);
@@ -343,7 +363,8 @@ const App = () => {
   //console.log(name);
   //console.log("after: " + locName[0]);
   //console.log("name: " + name[numLocations-1]);*/
-
+  console.log("drugNum list");
+  console.log(drugNum);
   const optimization = () => {
     console.log("placeList");
     console.log(placeList);

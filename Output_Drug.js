@@ -1,11 +1,13 @@
 import React from 'react';
 import ProgressBar from 'react-bootstrap/ProgressBar'; //See https://react-bootstrap.github.io/components/progress/ for ProgressBar implementation.
-import 'bootstrap/dist/css/bootstrap.min.css'; //See https://react-bootstrap.github.io/getting-started/introduction/ for guide to Bootstrap installation and import
+import 'bootstrap/dist/css/bootstrap.min.css'; //See https://react-bootstrap.github.io/getting-started/introduction/ for guide to Bootstrap installation and importing. This is the inspiration for the ProgressBar instance below.
 
 const OutputDrug = (props) => {
     return(
         <React.Fragment>
-        <label> {props.drug} </label> <ProgressBar now = {props.allocation} label = {`${props.allocation} %`}/><label> {props.quantity} units</label>
+            <div>
+                <label> {props.drug} </label> <ProgressBar now = {props.allocation} /*label = {`${props.allocation} %`}*//> <label> {props.allocation}%: {props.quantity} units</label>
+            </div>    
         </React.Fragment>
     );
 }
